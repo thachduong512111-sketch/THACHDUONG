@@ -64,7 +64,8 @@ with tab1:
             df_cart = pd.DataFrame(st.session_state.cart)
             st.dataframe(df_cart[['name', 'price']], use_container_width=True)
 
-            if st.button("❌ Xóa tất cả món"):st.session_state.cart = []
+            if st.button("❌ Xóa tất cả món"):
+                st.session_state.cart = []
                 st.rerun()
 
             st.divider()
@@ -125,7 +126,8 @@ with tab2:
     )
 
     if bill_amount > 0 and num_people > 0:
-        per_person = bill_amount / num_peoplest.success(f"👉 **Mỗi người cần thanh toán:** :red[{per_person:,.0f} VNĐ]")
+        per_person = bill_amount / num_people
+        st.success(f"👉 **Mỗi người cần thanh toán:** :red[{per_person:,.0f} VNĐ]")
 
 # ---------------------------------------------------------
 # TAB 3: LỊCH SỬ GIAO DỊCH
