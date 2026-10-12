@@ -261,22 +261,6 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
             reply = "Dạ, em chào bạn! Chào mừng bạn đến với Hương Vị Việt. Hôm nay bạn muốn ăn cơm, phở hay cần em gợi ý món ngon ạ?"
         else:
             reply = f"Dạ em đã nhận thông tin '{prompt}'. Bạn muốn em tư vấn chi tiết về món ăn, nước uống hay hướng dẫn chia bill thanh toán ạ?"
-
-        st.session_state.messages.append({"role": "assistant", "content": reply})
-        with st.chat_message("assistant"):
-            st.markdown(reply)
-            reply = "Dạ, quán có **Bún Bò Huế** (55.000đ) và **Bún Chả Hà Nội** (50.000đ) cực ngon ạ! Bạn thích ăn vị đậm đà cay nồng hay vị chua ngọt thanh mát ạ?"
-        elif any(w in p_lower for w in ["nước", "uống", "cà phê", "trà"]):
-            reply = "Dạ, quán có Cà Phê Sữa (25k), Trà Đào Cam Sả (32k), Nước Ép Cam (30k) và Sữa Đậu Nành (18k). Bạn muốn chọn nước ngọt mát hay cà phê tỉnh táo ạ?"
-        elif any(w in p_lower for w in ["ăn gì", "gợi ý", "ngon", "rẻ"]):
-            reply = "Dạ, nếu bạn băn khoăn thì hai món **Best-Seller** bán chạy nhất quán là **Cơm Tấm Sườn Bì Chả** và **Phở Bò** ạ! Bạn muốn ăn cơm cho chắc bụng hay ăn món nước nóng hổi ạ?"
-        elif any(w in p_lower for w in ["chia", "bill", "tính tiền", "qr", "thanh toán"]):
-            reply = "Dạ, để tính tiền và chia bill nhóm, bạn chọn mục **'🧮 Chia Tiền Nhóm & QR'** ở thanh menu bên trái nhé! Bạn cần em hướng dẫn cách quét mã QR hay cách nhập số người chia không ạ?"
-        elif any(w in p_lower for w in ["chào", "hi", "hello"]):
-            reply = "Dạ, em chào bạn! Chào mừng bạn đến với Hương Vị Việt. Hôm nay bạn muốn ăn cơm, phở hay cần em gợi ý món ngon ạ?"
-        else:
-            reply = f"Dạ em đã nhận thông tin '{prompt}'. Bạn muốn em tư vấn chi tiết về món ăn, nước uống hay hướng dẫn chia bill thanh toán ạ?"
-           
-        st.session_state.messages.append({"role": "assistant", "content": reply})
+            st.session_state.messages.append({"role": "assistant", "content": reply})
         with st.chat_message("assistant"):
             st.markdown(reply)
