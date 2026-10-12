@@ -1,119 +1,256 @@
 import sqlite3
 import streamlit as st
-# Cấu hình giao diện rộng cho app
+
+# Cấu hình trang Streamlit
 st.set_page_config(
     page_title="Hương Vị Việt - Ứng Dụng Gọi Món & Chia Bill",
-    page_icon="🥢",
+    page_icon="🍲",
     layout="wide",
 )
 
-# ================= 1. CẤU HÌNH DATABASE (Lưu dữ liệu không mất khi thoát trang) =================
+# ==================== 1. CẤU HÌNH DATABASE (LƯU DỮ LIỆU BỀN VỮNG) ====================
 conn = sqlite3.connect("quan_an.db", check_same_thread=False)
 cursor = conn.cursor()
 
-# Bảng giỏ hàng
+# Bảng Giỏ hàng
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS gio_hang (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        ten_mon TEXT,
-        gia REAL,
-        so_luong INTEGER
-    )
+CREATE TABLE IF NOT EXISTS gio_hang (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ten_mon TEXT,
+    gia REAL,
+    so_luong INTEGER,
+    loai TEXT
+)
 """)
-# Bảng lịch sử giao dịch / doanh thu
+
+# Bảng Lịch sử giao dịch & Doanh thu
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS lich_su (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        thoi_gian TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        tong_tien REAL,
-        chi_tiet TEXT
-    )
+CREATE TABLE IF NOT EXISTS lich_su (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    thoi_gian TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    tong_tien REAL,
+    so_nguoi INTEGER,
+    tien_moi_nguoi REAL,
+    hinh_thuc TEXT
+)
 """)
 conn.commit()
 
 
-def them_vao_db(ten_mon, gia):
-  cursor.execute("SELECT so_luong FROM gio_hang WHERE ten_mon = ?", (ten_mon,))
-  row = cursor.fetchone()
-  if row:
-    cursor.execute(
-        "UPDATE gio_hang SET so_luong = so_luong + 1 WHERE ten_mon = ?",
-        (ten_mon,),
-    )
-  else:
-    cursor.execute(
-        "INSERT INTO gio_hang (ten_mon, gia, so_luong) VALUES (?, ?, 1)",
-        (ten_mon, gia),
-    )
-  conn.commit()
-
-
-# ================= 2. TRỢ LÝ ẢO Ở SIDEBAR VỚI LOGO RIÊNG =================
-with st.sidebar:
-  # Logo thu nhỏ cho trợ lý
-  st.markdown(
-      """
-        <div style="display: flex; align-items: center; gap: 10px; background: #2b2b2b; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-            <div style="background-color: #B83227; color: white; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 18px;">HV</div>
-            <div>
-                <h4 style="margin: 0; color: white; font-size: 15px;">Hương Vị Việt AI</h4>
-                <p style="margin: 0; color: #aaa; font-size: 11px;">Trợ lý tư vấn quán</p>
-            </div>
-        </div>
-    """,
-      unsafe_allow_html=True,
-  )
-
-  st.caption("Hỏi tui về món ăn, giá cả hoặc cách tính tiền nha!")
-
-  if "messages" not in st.session_state:
-    st.session_state.messages = [{
-        "role": "assistant",
-        "content": (
-            "Dạ chào bạn! Mình là trợ lý của quán Hương Vị Việt. Bạn cần giúp"
-            " gì ạ?"
-        ),
-    }]
-
-  for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-      st.markdown(msg["content"])
-
-  if prompt := st.chat_input("Nhập câu hỏi cho trợ lý..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-      st.markdown(prompt)
-
-    p_lower = prompt.lower()
-    if "phở" in p_lower:
-      reply = "Quán có Phở bò đặc biệt thơm ngon đậm đà giá 65.000đ ạ!"
-    elif "bún" in p_lower: reply = "Quán có Bún bò Huế (60.000đ) và Bún chả (55.000đ) rất ngon nha!"
-    elif "cơm" in p_lower:
-      reply = "Cơm tấm sườn nướng mật ong thơm lừng giá 65.000đ ạ!"
-    elif "chia" in p_lower or "bill" in p_lower:
-      reply = (
-          "Bạn có thể vào tab 'Chia bill thông minh' để chia tiền cho nhóm"
-          " nha!"
-      )
-    else:
-      reply = (
-          "Dạ, bạn có thể tham khảo thực đơn và các tab chức năng ở màn hình"
-          " chính nhé!"
-      )
-
-    st.session_state.messages.append({"role": "assistant", "content": reply})
-    with st.chat_message("assistant"):
-      st.markdown(reply)
-
-# ================= 3. GIAO DIỆN CHÍNH (LOGO THƯƠNG HIỆU ĐẸP MẮT) =================
+# ==================== 2. BANNER GIAO DIỆN CHÍNH ====================
 st.markdown("""
-    <div style="background: linear-gradient(135deg, #B83227 0%, #E74C3C 100%); padding: 25px; border-radius: 16px; color: white; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(184, 50, 39, 0.3);">
-        <div style="display: inline-flex; align-items: center; justify-content: center; background: white; color: #B83227; width: 65px; height: 65px; border-radius: 50%; font-size: 32px; font-weight: bold; margin-bottom: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-   <div style="display: inline-flex; align-items: center; justify-content: center; background: white; width: 65px; height: 65px; border-radius: 50%; margin-bottom: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); overflow: hidden;">
-    <img src="https://flagcdn.com/w80/vn.png" style="width: 100%; height: 100%; object-fit: cover;" />
-</div>
+    <div style="background: linear-gradient(135deg, #B83227 0%, #E74C3C 100%); padding: 22px; border-radius: 16px; color: white; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(184, 50, 39, 0.3);">
+        <div style="display: inline-flex; align-items: center; justify-content: center; background: white; width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); overflow: hidden;">
+            <img src="https://flagcdn.com/w80/vn.png" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
-        <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">HƯƠNG VỊ VIỆT</h1>
-        <p style="margin: 6px 0 0 0; font-size: 15px; opacity: 0.9;">Tinh hoa ẩm thực truyền thống • Chia bill thông minh • Quản lý doanh thu tự động</p>
+        <h1 style="margin: 0; font-size: 26px; letter-spacing: 1px;">HƯƠNG VỊ VIỆT</h1>
+        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Tinh hoa ẩm thực truyền thống • Chia bill thông minh • Quản lý doanh thu tự động</p>
     </div>
 """, unsafe_allow_html=True)
+
+
+# ==================== 3. DANH SÁCH MÓN ĂN & NƯỚC UỐNG ====================
+DANH_SACH_DO_AN = [
+    {"ten": "Cơm Tấm Sườn Bì Chả", "gia": 55000, "anh": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500"},
+    {"ten": "Phở Bò", "gia": 50000, "anh": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=500"},
+    {"ten": "Bò Kho", "gia": 55000, "anh": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500"},
+    {"ten": "Bún Bò Huế", "gia": 55000, "anh": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500"},
+    {"ten": "Bún Chả Hà Nội", "gia": 50000, "anh": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=500"},
+    {"ten": "Xôi Thập Cẩm", "gia": 35000, "anh": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500"},
+    {"ten": "Mì Xào Bò", "gia": 45000, "anh": "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=500"}
+]
+
+DANH_SACH_NUOC_UONG = [
+    {"ten": "Cà Phê Sữa", "gia": 25000, "anh": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500"},{"ten": "Trà Đào Cam Sả", "gia": 32000, "anh": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500"},
+    {"ten": "Nước Ép Cam", "gia": 30000, "anh": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500"},
+    {"ten": "Sữa Đậu Nành", "gia": 18000, "anh": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"}
+]
+
+
+# ==================== 4. MENU ĐIỀU HƯỚNG BÊN TRÁI (SIDEBAR) ====================
+with st.sidebar:
+    st.image("https://flagcdn.com/w80/vn.png", width=40)
+    st.title("📌 Danh Mục Quản Lý")
+    
+    chuc_nang = st.radio(
+        "Chọn chức năng:",
+        [
+            "📜 Menu Thực Đơn",
+            "🧮 Chia Tiền Nhóm & QR",
+            "📜 Lịch Sử Giao Dịch",
+            "📊 Thống Kê Doanh Thu",
+            "🤖 Trợ Lý AI Tư Vấn"
+        ]
+    )
+    st.divider()
+    
+    # Hiển thị tóm tắt Giỏ Hàng ở Sidebar
+    cursor.execute("SELECT SUM(gia * so_luong) FROM gio_hang")
+    tong_tien_gh = cursor.fetchone()[0] or 0
+    st.metric(label="🛒 Tổng giỏ hàng hiện tại", value=f"{tong_tien_gh:,.0f} VNĐ")
+
+
+# ==================== 5. XỬ LÝ GIAO DIỆN THEO CHỨC NĂNG ====================
+
+# --- CHỨC NĂNG 1: MENU THỰC ĐƠN ---
+if chuc_nang == "📜 Menu Thực Đơn":
+    col_menu, col_gio = st.columns([2.5, 1.2])
+    
+    with col_menu:
+        st.header("🍽️ Thực Đơn Quán")
+        
+        # Tab Phân loại Đồ Ăn & Nước Uống riêng rõ ràng
+        tab_do_an, tab_nuoc = st.tabs(["🍛 ĐỒ ĂN", "🥤 NƯỚC UỐNG"])
+        
+        # Hiển thị Đồ Ăn
+        with tab_do_an:
+            cols = st.columns(3)
+            for idx, item in enumerate(DANH_SACH_DO_AN):
+                with cols[idx % 3]:
+                    st.image(item["anh"], use_container_width=True)
+                    st.markdown(f"**{item['ten']}**")
+                    st.write(f"Giá: :red[**{item['gia']:,} VNĐ**]")
+                    sl = st.number_input("Số lượng", min_value=1, max_value=20, value=1, key=f"food_sl_{idx}")
+                    if st.button("➕ Thêm vào giỏ", key=f"btn_food_{idx}"):
+                        cursor.execute("INSERT INTO gio_hang (ten_mon, gia, so_luong, loai) VALUES (?, ?, ?, ?)",
+                                       (item['ten'], item['gia'], sl, "Đồ ăn"))
+                        conn.commit()
+                        st.success(f"Đã thêm {sl} {item['ten']}")
+                        st.rerun()
+
+        # Hiển thị Nước Uống
+        with tab_nuoc:
+            cols_n = st.columns(3)
+            for idx, item in enumerate(DANH_SACH_NUOC_UONG):
+                with cols_n[idx % 3]:
+                    st.image(item["anh"], use_container_width=True)
+                    st.markdown(f"**{item['ten']}**")
+                    st.write(f"Giá: :red[**{item['gia']:,} VNĐ**]")sl = st.number_input("Số lượng", min_value=1, max_value=20, value=1, key=f"drink_sl_{idx}")
+                    if st.button("➕ Thêm vào giỏ", key=f"btn_drink_{idx}"):
+                        cursor.execute("INSERT INTO gio_hang (ten_mon, gia, so_luong, loai) VALUES (?, ?, ?, ?)",
+                                       (item['ten'], item['gia'], sl, "Nước uống"))
+                        conn.commit()
+                        st.success(f"Đã thêm {sl} {item['ten']}")
+                        st.rerun()
+
+    with col_gio:
+        st.header("🛒 Giỏ Hàng")
+        cursor.execute("SELECT id, ten_mon, gia, so_luong, loai FROM gio_hang")
+        items = cursor.fetchall()
+        
+        if items:
+            for item in items:
+                tt = item[2] * item[3]
+                st.write(f"• **{item[1]}** (x{item[3]}) - :red[{tt:,.0f} VNĐ]")
+            
+            st.divider()
+            st.markdown(f"### Tổng cộng: :red[{tong_tien_gh:,.0f} VNĐ]")
+            
+            if st.button("🗑️ Xóa sạch giỏ hàng", type="secondary"):
+                cursor.execute("DELETE FROM gio_hang")
+                conn.commit()
+                st.rerun()
+        else:
+            st.info("Giỏ hàng chưa có món nào.")
+
+
+# --- CHỨC NĂNG 2: CHIA TIỀN NHÓM & TẠO QR CHUYỂN KHỎAN ---
+elif chuc_nang == "🧮 Chia Tiền Nhóm & QR":
+    st.header("🧮 Chia Bill Thông Minh & Mã QR Chuyển Khoản")
+    
+    if tong_tien_gh > 0:
+        col_calc, col_qr = st.columns([1.5, 1])
+        
+        with col_calc:
+            st.subheader("1. Tính toán chia bill")
+            st.write(f"Tổng hóa đơn trong giỏ: **{tong_tien_gh:,.0f} VNĐ**")
+            so_nguoi = st.number_input("Nhập số người chia bill:", min_value=1, value=2)
+            
+            tien_moi_nguoi = tong_tien_gh / so_nguoi if so_nguoi > 0 else tong_tien_gh
+            st.success(f"👉 Mỗi người cần chuyển: **{tien_moi_nguoi:,.0f} VNĐ**")
+            
+            if st.button("✅ Xác nhận thanh toán & Lưu lịch sử"):
+                cursor.execute("INSERT INTO lich_su (tong_tien, so_nguoi, tien_moi_nguoi, hinh_thuc) VALUES (?, ?, ?, ?)",
+                               (tong_tien_gh, so_nguoi, tien_moi_nguoi, "Chuyển khoản / Tiền mặt"))
+                cursor.execute("DELETE FROM gio_hang")
+                conn.commit()
+                st.balloons()
+                st.success("Đã thanh toán thành công và lưu vào Lịch sử!")
+                st.rerun()
+
+        with col_qr:
+            st.subheader("2. Mã QR Thanh Toán VietQR")
+            # Tạo mã VietQR động theo tổng tiền
+            nganhang = "MB" # Ngân hàng MBBank
+            stk = "0900000000" # Bạn có thể thay bằng STK của bạn
+            tentk = "HUONG VI VIET"qr_url = f"https://img.vietqr.io/image/{nganhang}-{stk}-compact2.png?amount={int(tien_moi_nguoi)}&addInfo=Thanh%20toan%20Huong%20Vi%20Viet&accountName={tentk}"
+            st.image(qr_url, caption=f"Quét QR để chuyển {tien_moi_nguoi:,.0f} VNĐ", use_container_width=True)
+    else:
+        st.warning("Giỏ hàng hiện đang trống! Vui lòng chọn món ở Menu trước.")
+
+
+# --- CHỨC NĂNG 3: LỊCH SỬ GIAO DỊCH ---
+elif chuc_nang == "📜 Lịch Sử Giao Dịch":
+    st.header("📜 Lịch Sử Thanh Toán Giao Dịch")
+    cursor.execute("SELECT id, thoi_gian, tong_tien, so_nguoi, tien_moi_nguoi FROM lich_su ORDER BY id DESC")
+    rows = cursor.fetchall()
+    
+    if rows:
+        st.dataframe(
+            rows,
+            column_config={
+                "0": "Mã HD",
+                "1": "Thời Gian",
+                "2": "Tổng Hóa Đơn (VNĐ)",
+                "3": "Số Người",
+                "4": "Tiền/Người (VNĐ)"
+            },
+            use_container_width=True
+        )
+    else:
+        st.info("Chưa có lịch sử giao dịch nào được lưu.")
+
+
+# --- CHỨC NĂNG 4: THỐNG KÊ DOANH THU ---
+elif chuc_nang == "📊 Thống Kê Doanh Thu":
+    st.header("📊 Thống Kê Doanh Thu Quán")
+    
+    cursor.execute("SELECT SUM(tong_tien), COUNT(id) FROM lich_su")
+    res = cursor.fetchone()
+    tong_doanh_thu = res[0] or 0
+    tong_don = res[1] or 0
+    
+    c1, c2 = st.columns(2)
+    c1.metric("💰 Tổng Doanh Thu", f"{tong_doanh_thu:,.0f} VNĐ")
+    c2.metric("🧾 Tổng Số Đơn Đã Thanh Toán", f"{tong_don} đơn")
+
+# --- CHỨC NĂNG 5: TRỢ LÝ AI TƯ VẤN ---
+elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
+    st.header("🤖 Trợ Lý AI Hương Vị Việt")
+    st.write("Hỏi trợ lý về tư vấn món ăn, tính toán giá cả...")
+    
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    if prompt := st.chat_input("Hỏi trợ lý tư vấn món ăn..."):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        p_lower = prompt.lower()
+        if "cơm" in p_lower:
+            reply = "Cơm tấm sườn bì chả thơm lừng giá 55.000đ ạ!"
+        elif "phở" in p_lower:
+            reply = "Phở bò nước dùng đậm đà truyền thống giá 50.000đ!"
+        elif "chia" in p_lower or "bill" in p_lower:
+            reply = "Bạn chọn mục '🧮 Chia Tiền Nhóm & QR' ở thanh menu bên trái để tính tiền nhé!"
+        else:
+            reply = "Dạ, bạn có thể xem danh sách món ăn và nước uống ở mục '📜 Menu Thực Đơn' góc trái nhé!"
+
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+        with st.chat_message("assistant"):
+            st.markdown(reply)
