@@ -125,7 +125,8 @@ if chuc_nang == "📜 Menu Thực Đơn":
                 with cols_n[idx % 3]:
                     st.image(item["anh"], use_container_width=True)
                     st.markdown(f"**{item['ten']}**")
-                    st.write(f"Giá: :red[**{item['gia']:,} VNĐ**]")sl = st.number_input("Số lượng", min_value=1, max_value=20, value=1, key=f"drink_sl_{idx}")
+                    st.write(f"Giá: :red[**{item['gia']:,} VNĐ**]")
+                    sl = st.number_input("Số lượng", min_value=1, max_value=20, value=1, key=f"drink_sl_{idx}")
                     if st.button("➕ Thêm vào giỏ", key=f"btn_drink_{idx}"):
                         cursor.execute("INSERT INTO gio_hang (ten_mon, gia, so_luong, loai) VALUES (?, ?, ?, ?)",
                                        (item['ten'], item['gia'], sl, "Nước uống"))
