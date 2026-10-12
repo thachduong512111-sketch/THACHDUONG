@@ -117,4 +117,4 @@ st.markdown(...)
         <p style="margin: 6px 0 0 0; font-size: 15px; opacity: 0.9;">Tinh hoa ẩm truyền thống • Chia bill thông minh • Quản lý doanh thu tự động</p>
     </div>
 """,
-    unsafe
+unsafe
