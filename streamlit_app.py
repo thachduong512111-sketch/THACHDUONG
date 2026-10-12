@@ -1,163 +1,172 @@
+import sqlite3
 import streamlit as st
-import pandas as pd
-from datetime import datetime
 
-# Cấu hình trang Streamlit
-st.set_page_config(page_title="App Tính Tiền Quán & Chia Bill", page_icon="🧮", layout="wide")
+# Cấu hình giao diện rộng cho app
+st.set_page_config(
+    page_title="Hương Vị Việt - Ứng Dụng Gọi Món", page_icon="🥢", layout="wide"
+)
 
-# Khởi tạo dữ liệu trong Session State
-if 'menu' not in st.session_state:
-    st.session_state.menu = [
-        {"id": 1, "name": "Phở bò đặc biệt", "category": "Món chính", "price": 65000, "desc": "Phở bò truyền thống với tái, nạm và bò viên."},
-        {"id": 2, "name": "Cơm tấm sườn nướng", "category": "Món chính", "price": 70000, "desc": "Sườn nướng mật ong dùng kèm cơm tấm, bì và đồ chua."},
-        {"id": 3, "name": "Trà đào cam sả", "category": "Nước uống", "price": 35000, "desc": "Giải nhiệt ngày hè với vị thanh ngọt."},
-        {"id": 4, "name": "Cà phê sữa đá", "category": "Nước uống", "price": 25000, "desc": "Cà phê nguyên chất đậm đà."}
-    ]
+# ================= 1. CẤU HÌNH DATABASE (Lưu dữ liệu không mất khi thoát trang) =================
+conn = sqlite3.connect("quan_an.db", check_same_thread=False)
+cursor = conn.cursor()
 
-if 'cart' not in st.session_state:
-    st.session_state.cart = []
-
-if 'history' not in st.session_state:
-    st.session_state.history = []
-
-st.title("🍽️ App Tính Tiền Quán & Chia Hóa Đơn Thông Minh")
-
-# Navigation Tabs
-tab1, tab2, tab3, tab4 = st.tabs([
-    "🛒 1. Gọi món & Thanh toán", 
-    "👥 2. Chia bill thông minh", 
-    "📜 3. Lịch sử giao dịch", 
-    "📊 4. Thống kê doanh thu"
-])
-
-# ---------------------------------------------------------
-# TAB 1: GỌI MÓN & THANH TOÁN
-# ---------------------------------------------------------
-with tab1:
-    col_menu, col_cart = st.columns([3, 2])
-
-    with col_menu:
-        st.subheader("📋 Thực đơn")
-        
-        # Bộ lọc danh mục
-        categories = ["Tất cả"] + list(set(item['category'] for item in st.session_state.menu))
-        selected_cat = st.selectbox("Lọc theo danh mục", categories)
-
-        for item in st.session_state.menu:
-            if selected_cat == "Tất cả" or item['category'] == selected_cat:
-                with st.container(border=True):
-                    c1, c2 = st.columns([3, 1])
-                    with c1:
-                        st.markdown(f"**{item['name']}**")
-                        st.caption(f"{item['category']} • {item['desc']}")
-                        st.markdown(f"**:red[{item['price']:,} đ]**")
-                    with c2:
-                        if st.button("Thêm", key=f"add_{item['id']}"):
-                            st.session_state.cart.append(item)
-                            st.toast(f"Đã thêm {item['name']} vào giỏ!")
-
-    with col_cart:
-        st.subheader("🛒 Giỏ hàng")
-        if not st.session_state.cart:
-            st.info("Giỏ hàng đang trống. Hãy chọn món từ thực đơn.")
-        else:
-            df_cart = pd.DataFrame(st.session_state.cart)
-            st.dataframe(df_cart[['name', 'price']], use_container_width=True)
-
-            if st.button("❌ Xóa tất cả món"):
-                st.session_state.cart = []
-                st.rerun()
-
-            st.divider()
-            
-            # Thông tin bàn & Ghi chú
-            st.subheader("📋 Thông tin đơn hàng")
-            table_num = st.selectbox("Chọn số bàn", [f"Bàn {i}" for i in range(1, 11)])
-            note = st.text_input("Ghi chú cho bếp", placeholder="Ví dụ: Không hành, ít cay...")
-
-            # Tính toán VAT & Giảm giá
-            st.subheader("⚙️ Tính toán hóa đơn")
-            discount_percent = st.number_input("Mức giảm giá (%)", min_value=0, max_value=100, value=0)
-            vat_percent = st.number_input("Thuế VAT (%)", min_value=0, max_value=20, value=8)
-
-            subtotal = sum(item['price'] for item in st.session_state.cart)
-            discount_amount = subtotal * (discount_percent / 100)
-            after_discount = subtotal - discount_amount
-            vat_amount = after_discount * (vat_percent / 100)
-            total_final = after_discount + vat_amount
-
-            st.write(f"**Tạm tính:** {subtotal:,.0f} đ")
-            st.write(f"**Giảm giá ({discount_percent}%):** -{discount_amount:,.0f} đ")
-            st.write(f"**VAT ({vat_percent}%):** +{vat_amount:,.0f} đ")
-            st.markdown(f"### **Tổng cộng: {total_final:,.0f} đ**")
-
-            # Nút Lưu hóa đơn
-            if st.button("✅ Hoàn tất & Gửi đơn hàng", type="primary"):
-                order_info = {
-                    "time": datetime.now().strftime("%H:%M:%S %d/%m/%Y"),
-                    "table": table_num,
-                    "items": [i['name'] for i in st.session_state.cart],
-                    "total": total_final,
-                    "note": note
-                }
-                st.session_state.history.append(order_info)
-                st.session_state.last_total = total_final
-                st.session_state.cart = []
-                st.success(f"Đã tạo hóa đơn cho {table_num} thành công!")
-
-            # Mã QR giả lập demo
-            st.divider()
-            st.subheader("📱 QR Thanh toán (Demo)")
-            qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=PAYMENT_TABLE_{table_num}_TOTAL_{int(total_final)}"
-            st.image(qr_url, caption="Quét mã QR để thanh toán giả lập")
-
-# ---------------------------------------------------------
-# TAB 2: CHIA BILL THÔNG MINH
-# ---------------------------------------------------------
-with tab2:
-    st.subheader("👥 Chia bill thông minh cho nhóm")
-    
-    num_people = st.number_input("Số người tham gia chia tiền", min_value=1, value=2, step=1)
-    bill_amount = st.number_input(
-        "Số tiền cần chia (đ)", 
-        min_value=0.0, 
-        value=float(st.session_state.get('last_total', 135000)), 
-        step=5000.0
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS gio_hang (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ten_mon TEXT,
+        gia REAL,
+        so_luong INTEGER
     )
+""")
+conn.commit()
 
-    if bill_amount > 0 and num_people > 0:
-        per_person = bill_amount / num_people
-        st.success(f"👉 **Mỗi người cần thanh toán:** :red[{per_person:,.0f} VNĐ]")
 
-# ---------------------------------------------------------
-# TAB 3: LỊCH SỬ GIAO DỊCH
-# ---------------------------------------------------------
-with tab3:
-    st.subheader("📜 Lịch sử các đơn hàng đã tạo")
-    if not st.session_state.history:
-        st.info("Chưa có lịch sử giao dịch nào.")
+def them_vao_db(ten_mon, gia):
+  cursor.execute("SELECT so_luong FROM gio_hang WHERE ten_mon = ?", (ten_mon,))
+  row = cursor.fetchone()
+  if row:
+    cursor.execute(
+        "UPDATE gio_hang SET so_luong = so_luong + 1 WHERE ten_mon = ?",
+        (ten_mon,),
+    )
+  else:
+    cursor.execute(
+        "INSERT INTO gio_hang (ten_mon, gia, so_luong) VALUES (?, ?, 1)",
+        (ten_mon, gia),
+    )
+  conn.commit()
+
+
+# ================= 2. TRỢ LÝ ẢO Ở SIDEBAR (Giống mẫu N2 Assistant) =================
+with st.sidebar:
+  st.image(
+      "https://cdn-icons-png.flaticon.com/512/4712/4712109.png", width=50
+  )
+  st.title("🤖 Trợ lý Quán Ăn")
+  st.caption("Hỏi tui về món ăn, giá cả hoặc cách tính tiền nha!")
+
+  if "messages" not in st.session_state:
+    st.session_state.messages = [{
+        "role": "assistant",
+        "content": (
+            "Dạ chào bạn! Mình là trợ lý của quán. Bạn muốn chọn món gì ạ?"
+        ),
+    }]
+
+  for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+      st.markdown(msg["content"])
+
+  if prompt := st.chat_input("Nhập câu hỏi cho trợ lý..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+      st.markdown(prompt)
+
+    # Phản hồi thông minh của bot
+    if "phở" in prompt.lower():
+      reply = "Quán có Phở bò đặc biệt nước dùng đậm đà, giá 65.000đ nhé!"
+    elif "nước" in prompt.lower() or "uống" in prompt.lower():
+      reply = "Quán phục vụ Trà đào cam sả và Cà phê sữa đá rất ngon ạ!"
     else:
-        df_history = pd.DataFrame(st.session_state.history)
-        df_history['items'] = df_history['items'].apply(lambda x: ", ".join(x))
-        df_history.columns = ["Thời gian", "Bàn", "Các món đã đặt", "Tổng tiền (đ)", "Ghi chú"]
-        st.dataframe(df_history, use_container_width=True)
+      reply = (
+          "Dạ, bạn có thể xem qua thực đơn ở màn hình chính để chọn món nha!"
+      )
 
-# ---------------------------------------------------------
-# TAB 4: THỐNG KÊ DOANH THU
-# ---------------------------------------------------------
-with tab4:
-    st.subheader("📊 Thống kê doanh thu đơn giản")
-    if not st.session_state.history:
-        st.info("Chưa có dữ liệu doanh thu.")
-    else:
-        total_revenue = sum(order['total'] for order in st.session_state.history)
-        total_orders = len(st.session_state.history)
+    st.session_state.messages.append({"role": "assistant", "content": reply})
+    with st.chat_message("assistant"):
+      st.markdown(reply)
 
-        col1, col2 = st.columns(2)
-        col1.metric("Tổng số đơn hàng", f"{total_orders} đơn")
-        col2.metric("Tổng doanh thu", f"{total_revenue:,.0f} đ")
+# ================= 3. GIAO DIỆN CHÍNH (Banner + Thực đơn + Giỏ hàng) =================
 
-        st.divider()
-        st.markdown("**Biểu đồ doanh thu theo từng đơn:**")
-        df_history = pd.DataFrame(st.session_state.history)
-        st.bar_chart(data=df_history, y="total")
+# Banner phong cách chuyên nghiệp
+st.markdown(
+    """
+    <div style="background-color: #B83227; padding: 20px; border-radius: 12px; color: white; text-align: center; margin-bottom: 25px;">
+        <h1 style="margin:0;">🥢 HƯƠNG VỊ VIỆT - APP TÍNH TIỀN & ĐẶT MÓN</h1><p style="margin:5px 0 0 0;">Thực đơn phong phú • Phục vụ tận tâm • Dữ liệu luôn được lưu tự động</p>
+    </div>
+""",
+    unsafe_allow_html=True,
+)
+
+tab1, tab2 = st.tabs(["📋 Thực đơn (Gọi món)", "🛒 Giỏ hàng & Thanh toán"])
+
+# --- TAB 1: THỰC ĐƠN CÓ HÌNH ẢNH ---
+with tab1:
+  st.subheader("Danh sách Món ăn & Đồ uống")
+
+  thuc_don = [
+      {
+          "ten": "Phở bò đặc biệt",
+          "loai": "Đồ ăn",
+          "gia": 65000,
+          "hinh": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43",
+      },
+      {
+          "ten": "Cơm tấm sườn nướng",
+          "loai": "Đồ ăn",
+          "gia": 70000,
+          "hinh": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+      },
+      {
+          "ten": "Trà đào cam sả",
+          "loai": "Đồ uống",
+          "gia": 30000,
+          "hinh": "https://images.unsplash.com/photo-1556679343-c7306c1976bc",
+      },
+      {
+          "ten": "Cà phê sữa đá",
+          "loai": "Đồ uống",
+          "gia": 25000,
+          "hinh": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd",
+      },
+  ]
+
+  # Chia lưới hiển thị các món (2 cột)
+  cols = st.columns(2)
+  for index, mon in enumerate(thuc_don):
+    with cols[index % 2]:
+      with st.container(border=True):
+        st.image(mon["hinh"], use_container_width=True)
+        st.markdown(f"### {mon['ten']}")
+        st.write(f"Phân loại: {mon['loai']}")
+        st.markdown(f"Giá: **{mon['gia']:,} đ**")
+
+        if st.button("➕ Thêm vào giỏ hàng", key=f"btn_{index}", use_container_width=True):
+          them_vao_db(mon["ten"], mon["gia"])
+          st.success(f"Đã thêm {mon['ten']} thành công!")
+          st.rerun()
+
+# --- TAB 2: GIỎ HÀNG & THANH TOÁN (Lấy từ SQLite) ---
+with tab2:
+  st.subheader("🛒 Giỏ hàng của bạn (Được lưu tự động vào Database)")
+
+  cursor.execute("SELECT id, ten_mon, gia, so_luong FROM gio_hang")
+  items = cursor.fetchall()
+
+  if items:
+    tong_tien = 0
+    for item in items:
+      item_id, ten, gia, sl = item
+      thanh_tien = gia * sl
+      tong_tien += thanh_tien
+
+      col_a, col_b, col_c = st.columns([3, 2, 1])
+      with col_a:
+        st.write(f"**{ten}** ({gia:,}đ)")
+      with col_b:
+        st.write(f"Số lượng: {sl}")
+      with col_c:
+        if st.button("🗑️ Xóa", key=f"del_{item_id}"):
+          cursor.execute("DELETE FROM gio_hang WHERE id = ?", (item_id,))
+          conn.commit()
+          st.rerun()
+
+    st.divider()
+    st.markdown(f"### Tổng thanh toán: **{tong_tien:,} đ**")
+
+    if st.button("💳 Thanh toán hóa đơn", type="primary"):
+      st.success("Thanh toán thành công! Hóa đơn đã được lưu.")
+      cursor.execute("DELETE FROM gio_hang")  # Xóa giỏ hàng sau khi thanh toán
+      conn.commit()
+      st.rerun()
+  else:st.info("Giỏ hàng đang trống. Hãy qua tab 'Thực đơn' để chọn món nhé!")
