@@ -1,6 +1,5 @@
    import sqlite3
 import streamlit as st
-
 # Cấu hình giao diện rộng cho app
 st.set_page_config(
     page_title="Hương Vị Việt - Ứng Dụng Gọi Món & Chia Bill",
