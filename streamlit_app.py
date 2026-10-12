@@ -109,7 +109,7 @@ with st.sidebar:
 st.markdown("""
     <div style="background: linear-gradient(135deg, #B83227 0%, #E74C3C 100%); padding: 25px; border-radius: 16px; color: white; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(184, 50, 39, 0.3);">
         <div style="display: inline-flex; align-items: center; justify-content: center; background: white; color: #B83227; width: 65px; height: 65px; border-radius: 50%; font-size: 32px; font-weight: bold; margin-bottom: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-            🇻🇳
+   &#127483;&#127470;
         </div>
         <h1 style="margin: 0; font-size: 28px; letter-spacing: 1px;">HƯƠNG VỊ VIỆT</h1>
         <p style="margin: 6px 0 0 0; font-size: 15px; opacity: 0.9;">Tinh hoa ẩm thực truyền thống • Chia bill thông minh • Quản lý doanh thu tự động</p>
