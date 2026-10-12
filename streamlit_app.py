@@ -243,23 +243,23 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         with st.chat_message("user"):
             st.markdown(prompt)
 
-    p_lower = prompt.lower()
+     p_lower = prompt.lower()
         
-        if any(w in p_lower for w in ["cơm", "sườn", "bì", "chả"]):
+     if any(w in p_lower for w in ["cơm", "sườn", "bì", "chả"]):
             reply = "Dạ, món **Cơm Tấm Sườn Bì Chả** bên quán có giá **55.000đ** ạ! Sườn nướng đậm vị chuẩn Sài Gòn. Bạn muốn gọi mấy phần ạ? Bạn có dùng thêm ớt cay hay mỡ hành nhiều không?"
-        elif any(w in p_lower for w in ["phở", "bò"]):
+     elif any(w in p_lower for w in ["phở", "bò"]):
             reply = "Dạ, **Phở Bò** nước dùng đậm đà truyền thống giá **50.000đ**! Bạn dùng phở tái, chín hay nạm ạ? Quán có bán kèm quẩy giòn và trà đá nữa đó ạ!"
-        elif any(w in p_lower for w in ["bún", "bún bò"]):
+     elif any(w in p_lower for w in ["bún", "bún bò"]):
             reply = "Dạ, quán có **Bún Bò Huế** (55.000đ) và **Bún Chả Hà Nội** (50.000đ) cực ngon ạ! Bạn thích ăn vị đậm đà cay nồng hay vị chua ngọt thanh mát ạ?"
-        elif any(w in p_lower for w in ["nước", "uống", "cà phê", "trà"]):
+     elif any(w in p_lower for w in ["nước", "uống", "cà phê", "trà"]):
             reply = "Dạ, quán có Cà Phê Sữa (25k), Trà Đào Cam Sả (32k), Nước Ép Cam (30k) và Sữa Đậu Nành (18k). Bạn muốn chọn nước ngọt mát hay cà phê tỉnh táo ạ?"
-        elif any(w in p_lower for w in ["ăn gì", "gợi ý", "ngon", "rẻ"]):
+     elif any(w in p_lower for w in ["ăn gì", "gợi ý", "ngon", "rẻ"]):
             reply = "Dạ, nếu bạn băn khoăn thì hai món **Best-Seller** bán chạy nhất quán là **Cơm Tấm Sườn Bì Chả** và **Phở Bò** ạ! Bạn muốn ăn cơm cho chắc bụng hay ăn món nước nóng hổi ạ?"
-        elif any(w in p_lower for w in ["chia", "bill", "tính tiền", "qr", "thanh toán"]):
+     elif any(w in p_lower for w in ["chia", "bill", "tính tiền", "qr", "thanh toán"]):
             reply = "Dạ, để tính tiền và chia bill nhóm, bạn chọn mục **'🧮 Chia Tiền Nhóm & QR'** ở thanh menu bên trái nhé! Bạn cần em hướng dẫn cách quét mã QR hay cách nhập số người chia không ạ?"
-        elif any(w in p_lower for w in ["chào", "hi", "hello"]):
+     elif any(w in p_lower for w in ["chào", "hi", "hello"]):
             reply = "Dạ, em chào bạn! Chào mừng bạn đến với Hương Vị Việt. Hôm nay bạn muốn ăn cơm, phở hay cần em gợi ý món ngon ạ?"
-        else:
+     else:
             reply = f"Dạ em đã nhận thông tin '{prompt}'. Bạn muốn em tư vấn chi tiết về món ăn, nước uống hay hướng dẫn chia bill thanh toán ạ?"
 
         st.session_state.messages.append({"role": "assistant", "content": reply})
