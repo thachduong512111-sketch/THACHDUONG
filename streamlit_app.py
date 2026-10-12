@@ -51,19 +51,19 @@ st.markdown("""
 
 # ==================== 3. DANH SÁCH MÓN ĂN & NƯỚC UỐNG ====================
 DANH_SACH_DO_AN = [
-    {"ten": "Cơm Tấm Sườn Bì Chả", "gia": 55000, "anh": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500"},
-    {"ten": "Phở Bò", "gia": 50000, "anh": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=500"},
-    {"ten": "Bò Kho", "gia": 55000, "anh": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500"},
-    {"ten": "Bún Bò Huế", "gia": 55000, "anh": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500"},
-    {"ten": "Bún Chả Hà Nội", "gia": 50000, "anh": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500"},
-    {"ten": "Xôi Thập Cẩm", "gia": 35000, "anh": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500"},
-    {"ten": "Mì Xào Bò", "gia": 45000, "anh": "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=500"}
+    {"ten": "Cơm Tấm Sườn Bì Chả", "gia": 55000, "anh": "https://i.pinimg.com/736x/cb/7d/ba/cb7dba9f46946ba781e7bccb04317b12.jpg"},
+    {"ten": "Phở Bò", "gia": 50000, "anh": "https://i.pinimg.com/1200x/35/6b/7a/356b7a29a52e3ae7cbf02597cbae488f.jpg"},
+    {"ten": "Bò Kho", "gia": 55000, "anh": "https://i.pinimg.com/1200x/d3/ca/2a/d3ca2a8251574451353bab15a74cb973.jpg"},
+    {"ten": "Bún Bò Huế", "gia": 55000, "anh": "https://i.pinimg.com/736x/aa/a6/b7/aaa6b7fc86c996451e593875ef83e2ce.jpg"},
+    {"ten": "Bún Chả Hà Nội", "gia": 50000, "anh": "https://i.pinimg.com/736x/50/c2/c6/50c2c657c9fdeeedafccbce1c05a1f01.jpg"},
+    {"ten": "Xôi Thập Cẩm", "gia": 35000, "anh": "https://i.pinimg.com/736x/20/cc/1f/20cc1fd5e526e51c296406ec3b466535.jpg"},
+    {"ten": "Mì Xào Bò", "gia": 45000, "anh": "https://i.pinimg.com/1200x/f8/74/46/f874462062b32b8772f1661a48da8589.jpg"}
 ]
 
 DANH_SACH_NUOC_UONG = [
-    {"ten": "Cà Phê Sữa", "gia": 25000, "anh": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500"},{"ten": "Trà Đào Cam Sả", "gia": 32000, "anh": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500"},
-    {"ten": "Nước Ép Cam", "gia": 30000, "anh": "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500"},
-    {"ten": "Sữa Đậu Nành", "gia": 18000, "anh": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"}
+    {"ten": "Cà Phê Sữa", "gia": 25000, "anh": "https://i.pinimg.com/1200x/a0/ee/d8/a0eed8b52ffdae7f3f89af1bfe0fc4dc.jpg"},{"ten": "Trà Đào Cam Sả", "gia": 32000, "anh": "https://i.pinimg.com/1200x/c1/15/be/c115be82743ce981b5f74df1d2e981ba.jpg"},
+    {"ten": "Nước Ép Cam", "gia": 30000, "anh": "https://i.pinimg.com/736x/2e/8c/23/2e8c2342f2c28d6ff61e02e97f7d4997.jpg"},
+    {"ten": "Sữa Đậu Nành", "gia": 18000, "anh": "https://i.pinimg.com/736x/0a/bc/8c/0abc8c6f5c966820c51ac8f68d6ccd21.jpg"}
 ]
 
 
