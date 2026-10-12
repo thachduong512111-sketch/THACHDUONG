@@ -51,12 +51,12 @@ st.markdown("""
 
 # ==================== 3. DANH SÁCH MÓN ĂN & NƯỚC UỐNG ====================
 DANH_SACH_DO_AN = [
-    {"ten": "Cơm Tấm Sườn Bì Chả", "gia": 55000, "anh": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500"},
-    {"ten": "Phở Bò", "gia": 50000, "anh": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=500"},
+    {"ten": "Cơm Tấm Sườn Bì Chả", "gia": 55000, "anh": "https://images.unsplash.com/photo-1544025162-d76694265947?w=500"},
+    {"ten": "Phở Bò", "gia": 50000, "anh": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=500"},
     {"ten": "Bò Kho", "gia": 55000, "anh": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500"},
     {"ten": "Bún Bò Huế", "gia": 55000, "anh": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500"},
-    {"ten": "Bún Chả Hà Nội", "gia": 50000, "anh": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=500"},
-    {"ten": "Xôi Thập Cẩm", "gia": 35000, "anh": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500"},
+    {"ten": "Bún Chả Hà Nội", "gia": 50000, "anh": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500"},
+    {"ten": "Xôi Thập Cẩm", "gia": 35000, "anh": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500"},
     {"ten": "Mì Xào Bò", "gia": 45000, "anh": "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=500"}
 ]
 
