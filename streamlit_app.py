@@ -184,7 +184,8 @@ elif chuc_nang == "🧮 Chia Tiền Nhóm & QR":
             # Tạo mã VietQR động theo tổng tiền
             nganhang = "MB" # Ngân hàng MBBank
             stk = "0900000000" # Bạn có thể thay bằng STK của bạn
-            tentk = "HUONG VI VIET"qr_url = f"https://img.vietqr.io/image/{nganhang}-{stk}-compact2.png?amount={int(tien_moi_nguoi)}&addInfo=Thanh%20toan%20Huong%20Vi%20Viet&accountName={tentk}"
+            tentk = "HUONG VI VIET"
+            qr_url = f"https://img.vietqr.io/image/{nganhang}-{stk}-compact2.png?amount={int(tien_moi_nguoi)}&addInfo=Thanh%20toan%20Huong%20Vi%20Viet&accountName={tentk}"
             st.image(qr_url, caption=f"Quét QR để chuyển {tien_moi_nguoi:,.0f} VNĐ", use_container_width=True)
     else:
         st.warning("Giỏ hàng hiện đang trống! Vui lòng chọn món ở Menu trước.")
