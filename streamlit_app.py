@@ -1,16 +1,18 @@
 import streamlit as st
 import sqlite3
+import os
 import google.generativeai as genai
-# Cấu hình API Key cho Google Gemini
-# Cấu hình API Key cho Google Gemini
-genai.configure(api_key="AQ.Ab8RN6LPg96Rs8b6DIwvIHy8b2xKkvis_N1tUyrOrU7Nc_oUFA")
+
+# Cấu hình API Key
+os.environ["GEMINI_API_KEY"] = "AQ.Ab8RN6KByupLK-rUom2hJEerlJJ8ifmivnYmDY3I6vnhS2t3eQ"
+genai.configure()
+
 # Cấu hình trang Streamlit
 st.set_page_config(
     page_title="Hương Vị Việt - Ứng Dụng Gọi Món & Chia Bill",
     page_icon="🍲",
     layout="wide",
 )
-
 # ==================== 1. CẤU HÌNH DATABASE (LƯU DỮ LIỆU BỀN VỮNG) ====================
 conn = sqlite3.connect("quan_an.db", check_same_thread=False)
 cursor = conn.cursor()
