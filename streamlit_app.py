@@ -1,5 +1,9 @@
-import sqlite3
 import streamlit as st
+import sqlite3
+from google import genai
+
+# Cấu hình API Key cho Google Gemini
+client = genai.Client(api_key="AQ.Ab8RN6Ib6AyqbRF7ZPstSP129fNkgnIUQvAv-a0MjCNf6yaUiQ")
 
 # Cấu hình trang Streamlit
 st.set_page_config(
@@ -238,29 +242,28 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    if prompt := st.chat_input("Hỏi trợ lý tư vấn món ăn..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+    if prompt := st.chat_input("Hỏi trợ lý về tư vấn món ăn..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-        p_lower = prompt.lower()
+        # Gọi AI Gemini tự động trả lời thông minh
+    system_instruction = (
+        "Bạn là trợ lý tư vấn món ăn thân thiện của nhà hàng Hương Vị Việt. "
+        "Hãy tư vấn chi tiết các món ăn, đồ uống, hương vị, giá cả và hỗ trợ tính tiền bill cho khách hàng một cách sinh động, hấp dẫn. "
+        "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
+    )
+    
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config={"system_instruction": system_instruction}
+        )
+        reply = response.text
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+    except Exception as e:
+        reply = f"Đã xảy ra lỗi kết nối AI: {e}"
 
-        if any(w in p_lower for w in ["cơm", "sườn", "bì", "chả"]):
-            reply = "Dạ, món **Cơm Tấm Sườn Bì Chả** bên quán có giá **55.000đ** ạ! Sườn nướng đậm vị chuẩn Sài Gòn. Bạn muốn gọi mấy phần ạ? Bạn có dùng thêm ớt cay hay mỡ hành nhiều không?"
-        elif any(w in p_lower for w in ["phở", "bò"]):
-            reply = "Dạ, **Phở Bò** nước dùng đậm đà truyền thống giá **50.000đ**! Bạn dùng phở tái, chín hay nạm ạ? Quán có bán kèm quẩy giòn và trà đá nữa đó ạ!"
-        elif any(w in p_lower for w in ["bún", "bún bò"]):
-            reply = "Dạ, quán có **Bún Bò Huế** (55.000đ) và **Bún Chả Hà Nội** (50.000đ) cực ngon ạ! Bạn thích ăn vị đậm đà cay nồng hay vị chua ngọt thanh mát ạ?"
-        elif any(w in p_lower for w in ["nước", "uống", "cà phê", "trà"]):
-            reply = "Dạ, quán có Cà Phê Sữa (25k), Trà Đào Cam Sả (32k), Nước Ép Cam (30k) và Sữa Đậu Nành (18k). Bạn muốn chọn nước ngọt mát hay cà phê tỉnh táo ạ?"
-        elif any(w in p_lower for w in ["ăn gì", "gợi ý", "ngon", "rẻ"]):
-            reply = "Dạ, nếu bạn băn khoăn thì hai món **Best-Seller** bán chạy nhất quán là **Cơm Tấm Sườn Bì Chả** và **Phở Bò** ạ! Bạn muốn ăn cơm cho chắc bụng hay ăn món nước nóng hổi ạ?"
-        elif any(w in p_lower for w in ["chia", "bill", "tính tiền", "qr", "thanh toán"]):
-            reply = "Dạ, để tính tiền và chia bill nhóm, bạn chọn mục **'🧮 Chia Tiền Nhóm & QR'** ở thanh menu bên trái nhé! Bạn cần em hướng dẫn cách quét mã QR hay cách nhập số người chia không ạ?"
-        elif any(w in p_lower for w in ["chào", "hi", "hello"]):
-            reply = "Dạ, em chào bạn! Chào mừng bạn đến với Hương Vị Việt. Hôm nay bạn muốn ăn cơm, phở hay cần em gợi ý món ngon ạ?"
-        else:
-            reply = f"Dạ em đã nhận thông tin '{prompt}'. Bạn muốn em tư vấn chi tiết về món ăn, nước uống hay hướng dẫn chia bill thanh toán ạ?"
-            st.session_state.messages.append({"role": "assistant", "content": reply})
-        with st.chat_message("assistant"):
-            st.markdown(reply)
+    with st.chat_message("assistant"):
+        st.markdown(reply)
