@@ -247,7 +247,8 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
             st.markdown(prompt)
 
             # Gọi AI Gemini tự động trả lời thông minh
-           system_instruction = (
+          # Gọi AI Gemini tự động trả lời thông minh
+    system_instruction = (
         "Bạn là trợ lý tư vấn món ăn thân thiện của nhà hàng Hương Vị Việt. "
         "Hãy tư vấn chi tiết các món ăn, đồ uống, hương vị, giá cả và hỗ trợ tính tiền bill cho khách hàng một cách sinh động, hấp dẫn. "
         "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
@@ -258,9 +259,9 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
             model_name="gemini-1.5-flash",
             system_instruction=system_instruction
         )
-            response = model.generate_content(prompt)
-            reply = response.text
-            st.session_state.messages.append({"role": "assistant", "content": reply})
+        response = model.generate_content(prompt)
+        reply = response.text
+        st.session_state.messages.append({"role": "assistant", "content": reply})
     except Exception as e:
         reply = f"Đã xảy ra lỗi kết nối AI: {e}"
-        st.session_state.messages.append({"role": "assistant", "content": reply})
+        st.session_state.messages.append({"role": "assistant", "content": reply})", "content": reply})
