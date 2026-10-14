@@ -259,7 +259,8 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
             model_name="gemini-1.5-flash",
             system_instruction=system_instruction
         )
-        response = model.generate_content(prompt)
+       prompt = str(prompt).strip()
+    response = model.generate_content(prompt)
         reply = response.text
         st.session_state.messages.append({"role": "assistant", "content": reply})
     except Exception as e:
