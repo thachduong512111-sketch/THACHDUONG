@@ -243,27 +243,27 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
             st.markdown(msg["content"])
 
     if prompt := st.chat_input("Hỏi trợ lý về tư vấn món ăn..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
         st.markdown(prompt)
 
-        # Gọi AI Gemini tự động trả lời thông minh
-    system_instruction = (
-        "Bạn là trợ lý tư vấn món ăn thân thiện của nhà hàng Hương Vị Việt. "
-        "Hãy tư vấn chi tiết các món ăn, đồ uống, hương vị, giá cả và hỗ trợ tính tiền bill cho khách hàng một cách sinh động, hấp dẫn. "
-        "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
-    )
-    
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-            config={"system_instruction": system_instruction}
+            # Gọi AI Gemini tự động trả lời thông minh
+            system_instruction = (
+            "Bạn là trợ lý tư vấn món ăn thân thiện của nhà hàng Hương Vị Việt. "
+            "Hãy tư vấn chi tiết các món ăn, đồ uống, hương vị, giá cả và hỗ trợ tính tiền bill cho khách hàng một cách sinh động, hấp dẫn. "
+            "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
         )
-        reply = response.text
-        st.session_state.messages.append({"role": "assistant", "content": reply})
-    except Exception as e:
-        reply = f"Đã xảy ra lỗi kết nối AI: {e}"
-
-    with st.chat_message("assistant"):
-        st.markdown(reply)
+        
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config={"system_instruction": system_instruction}
+            )
+            reply = response.text
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+        except Exception as e:
+            reply = f"Đã xảy ra lỗi kết nối AI: {e}"
+    
+        with st.chat_message("assistant"):
+            st.markdown(reply)
