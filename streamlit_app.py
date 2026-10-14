@@ -258,7 +258,7 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
             model_name="gemini-1.5-flash",
             system_instruction=system_instruction
         )
-        response = model.generate_content(prompt)
+            response = model.generate_content(prompt)
             
             reply = response.text
             st.session_state.messages.append({"role": "assistant", "content": reply})
