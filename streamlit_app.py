@@ -254,7 +254,7 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
     )
 
-          try:
+    try:
             model = genai.GenerativeModel(
                 model_name="gemini-1.5-flash",
                 system_instruction=system_instruction
