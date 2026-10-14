@@ -256,20 +256,20 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
     )
 
-    try:
-           model = genai.GenerativeModel(
+   try:
+    model = genai.GenerativeModel(
         model_name="gemini-2.5-flash",
         system_instruction=system_instruction
     )
 
-            prompt = str(prompt).strip()
-            response = model.generate_content(prompt)
-            reply = response.text or "Xin lỗi, AI chưa có câu trả lời."
+    prompt = str(prompt).strip()
+    response = model.generate_content(prompt)
+    reply = response.text or "Xin lỗi, AI chưa có câu trả lời."
 
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": reply
-            })
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": reply
+    })
 
     except Exception as e:
             reply = f"Đã xảy ra lỗi kết nối AI: {e}"
