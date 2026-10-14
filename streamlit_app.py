@@ -245,7 +245,7 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
     if prompt := st.chat_input("Hỏi trợ lý về tư vấn món ăn..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-        st.markdown(prompt)
+            st.markdown(prompt)
 
             # Gọi AI Gemini tự động trả lời thông minh
             system_instruction = (
