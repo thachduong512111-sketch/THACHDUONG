@@ -263,5 +263,8 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         reply = response.text
         st.session_state.messages.append({"role": "assistant", "content": reply})
     except Exception as e:
-    reply = f"Đã xảy ra lỗi kết nối AI: {e}"
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+            reply = f"Đã xảy ra lỗi kết nối AI: {e}"
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": reply
+            })
