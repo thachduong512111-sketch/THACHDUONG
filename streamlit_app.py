@@ -1,12 +1,9 @@
 import streamlit as st
 import sqlite3
-from google import genai
-
+import google.generativeai as genai
 # Cấu hình API Key cho Google Gemini
-import os
-os.environ["GEMINI_API_KEY"] = "AQ.Ab8RN6LPg96Rs8b6DIwvIHy8b2xKkvis_N1tUyrOrU7Nc_oUFA"
-client = genai.Client()
-
+# Cấu hình API Key cho Google Gemini
+genai.configure(api_key="AQ.Ab8RN6LPg96Rs8b6DIwvIHy8b2xKkvis_N1tUyrOrU7Nc_oUFA")
 # Cấu hình trang Streamlit
 st.set_page_config(
     page_title="Hương Vị Việt - Ứng Dụng Gọi Món & Chia Bill",
@@ -257,11 +254,12 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         )
         
         try:
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config={"system_instruction": system_instruction}
-            )
+           model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            system_instruction=system_instruction
+        )
+        response = model.generate_content(prompt)
+            
             reply = response.text
             st.session_state.messages.append({"role": "assistant", "content": reply})
         except Exception as e:
