@@ -3,7 +3,7 @@ import sqlite3
 from google import genai
 
 # Cấu hình API Key cho Google Gemini
-client = genai.Client(api_key="AQ.Ab8RN6Ib6AyqbRF7ZPstSP129fNkgnIUQvAv-a0MjCNf6yaUiQ")
+client = genai.Client(api_key="AQ.Ab8RN6LPg96Rs8b6DIwvIHy8b2xKkvis_N1tUyrOrU7Nc_oUFA")
 
 # Cấu hình trang Streamlit
 st.set_page_config(
