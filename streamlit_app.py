@@ -254,7 +254,7 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
         "Tuyệt đối không lặp lại một câu trả lời mẫu cố định."
     )
 
-  try:
+          try:
             model = genai.GenerativeModel(
                 model_name="gemini-1.5-flash",
                 system_instruction=system_instruction
@@ -269,7 +269,7 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
                 "content": reply
             })
 
-   except Exception as e:
+           except Exception as e:
             reply = f"Đã xảy ra lỗi kết nối AI: {e}"
             st.session_state.messages.append({
                 "role": "assistant",
