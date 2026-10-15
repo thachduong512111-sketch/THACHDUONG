@@ -3,9 +3,9 @@ import sqlite3
 import os
 import google.generativeai as genai
 
-# Cấu hình API Key
-os.environ["GEMINI_API_KEY"] = "AQ.Ab8RN6KByupLK-rUom2hJEerlJJ8ifmivnYmDY3I6vnhS2t3eQ"
-genai.configure()
+# Cấu hình API Key an toàn từ Streamlit Secrets
+api_key = st.secrets["GEMINI_API_KEY"]
+genai.configure(api_key=api_key)
 
 # Cấu hình trang Streamlit
 st.set_page_config(
