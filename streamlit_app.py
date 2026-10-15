@@ -6,7 +6,7 @@ import google.generativeai as genai
 # Cấu hình API Key an toàn từ Streamlit Secrets
 api_key = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
-
+model = genai.GenerativeModel("gemini-1.5-flash")
 # Cấu hình trang Streamlit
 st.set_page_config(
     page_title="Hương Vị Việt - Ứng Dụng Gọi Món & Chia Bill",
