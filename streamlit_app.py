@@ -258,7 +258,7 @@ elif chuc_nang == "🤖 Trợ Lý AI Tư Vấn":
 
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
+            model_name="gemini-1.5-flash",
             system_instruction=system_instruction
         )
 
